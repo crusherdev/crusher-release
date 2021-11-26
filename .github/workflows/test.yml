@@ -1,0 +1,24 @@
+name: CI
+on:
+  push:
+    branches: [main]
+
+jobs:
+  first:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Pull/Build
+        run: docker pull aa
+      - name: docker run
+        run: |
+          docker run -e TEST_SUITE_ID=1 GITHUB_SHA={{github.sha}} DATABASE_URL={{secret.MONGO_URI}}
+  second:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Pull/Build
+        run: docker pull aa
+      - name: docker run
+        run: |
+          docker run -e TEST_SUITE_ID=2 GITHUB_SHA={{github.sha}} DATABASE_URL={{secret.MONGO_URI}}

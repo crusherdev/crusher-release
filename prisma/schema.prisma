@@ -1,0 +1,31 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["mongoDb"]
+}
+
+enum Status {
+  PASS
+  FAILED
+}
+
+model Test {
+  id     String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  sha    String
+  case   Case   @relation(fields: [caseID], references: [id])
+  caseID String
+  status Status
+  logs   String
+}
+
+model Case {
+  id          String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  url         String
+  description String
+  actions     String
+  Test        Test[]
+}
