@@ -23,9 +23,8 @@ model Test {
 }
 
 model Case {
-  id          String @id @default(dbgenerated()) @map("_id") @db.ObjectId
-  url         String
-  description String
-  actions     String
-  Test        Test[]
+  id      String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  url     String
+  actions String
+  Test    Test[]
 }

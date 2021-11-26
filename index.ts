@@ -1,56 +1,66 @@
-import { PrismaClient } from "@prisma/client";
 import util from "util";
-import { exec } from "child_process";
-
+import { PrismaClient } from "@prisma/client";
+import { exec, spawn } from "child_process";
+import fs from "fs";
+import { mock } from "./mockTests";
 const execPromise = util.promisify(exec);
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-const log = (id: string) => console.log.bind(`[${id}]`);
-const wait = (timeout = 2000) =>
+const log = (id: string) => console.log.bind(null, `[${id}]`);
+
+const wait = (timeout = 1) =>
   new Promise((r) =>
     setTimeout(() => {
       r("");
-    }, timeout)
+    }, timeout * 1000)
   );
 
 const LIMIT = 5;
-const GITHUB_SHA = process.env.GITHUB_SHA || "efrvc";
+const GITHUB_SHA = process.env.GITHUB_SHA || "template-sha";
 const TEST_SUITE_ID = Number(process.env.GITHUB_SHA) || 1;
 
 async function main() {
-  await prisma.$connect();
+  // await prisma.$connect();
 
-  const cases = await prisma.case.findMany({
-    skip: LIMIT * (TEST_SUITE_ID - 1),
-    take: LIMIT,
-  });
+  const cases = mock;
+  //  await prisma.case.findMany({
+  //   skip: LIMIT * (TEST_SUITE_ID - 1),
+  //   take: LIMIT,
+  // });
 
-  for (const { actions, id } of cases) {
-    // start Crusher recorder
+  if (!fs.existsSync("tests")) {
+    fs.mkdirSync("tests");
+  }
+
+  for (const { actions, id, url } of cases) {
+    const path = "tests/" + url + ".txt";
     log(id)("Starting Crusher app");
-    execPromise("crusher-electron-app");
-    await wait();
-    // Perform actions on crusher recorder
-    log(id)("Performing actions");
+    const crusherRecorder = spawn("crusher-electron-app");
+
+    await wait(0.5);
+    fs.writeFileSync(path, actions, "utf8");
+
+    log(id)("Performing actions on crusher recorder");
     const { stderr, stdout } = await execPromise(
-      `xmacroplay -d 50 "$DISPLAY" < tests/microsoft.txt`
+      `xmacroplay -d 50 "$DISPLAY" < ${path}`
     );
 
     const status = stderr ? "FAILED" : "PASS";
     log(id)(status);
-    await prisma.test.create({
-      data: {
-        sha: GITHUB_SHA,
-        caseID: id,
-        status,
-        logs: stdout,
-      },
-    });
+    // await prisma.test.create({
+    //   data: {
+    //     sha: GITHUB_SHA,
+    //     caseID: id,
+    //     status,
+    //     logs: stdout,
+    //   },
+    // });
 
-    log("Killing Crusher app");
-    // kill Crusher recorder
-    await execPromise("pkill crusher-electron-app");
+    log(id)("Killing Crusher app");
+
+    crusherRecorder.kill("SIGHUP");
+    await wait();
   }
 }
 
