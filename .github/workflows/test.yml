@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build
-      - run: \
+#       - name: Build
+#         run: echo ''
       - uses: docker/build-push-action@v1
         with:
           registry: registry
