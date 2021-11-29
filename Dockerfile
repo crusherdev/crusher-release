@@ -1,15 +1,18 @@
 FROM dorowu/ubuntu-desktop-lxde-vnc
 
-WORKDIR /app
 RUN apt-get update
-RUN apt-get install -y wget
-RUN wget https://github.com/crusherdev/crusher-downloads/releases/latest/download/crusher-recorder.deb
+RUN apt-get install -y wget nodejs
+RUN wget https://github.com/crusherdev/crusher-downloads/releases/download/v0.2/crusher-recorder.deb
 RUN dpkg -i crusher-recorder.deb || true
 RUN apt-get -yq -f install
 RUN dpkg -i crusher-recorder.deb
-COPY . .
-RUN apt-get install node
+RUN rm crusher-recorder.deb
 
+COPY . .
+RUN node -v
+RUN npm -g install nvm
+RUN nvm use 14
+RUN node -v
 RUN npm install
 
-CMD ["ts-node","index.ts"]
+CMD ["npx","ts-node","index.ts"]

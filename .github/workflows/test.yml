@@ -1,11 +1,31 @@
 name: CI
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: "Log level"
+        required: true
+        default: "warning"
+      tags:
+        description: "Test scenario tags"
 
 jobs:
-  first:
+  build:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+      - run: \
+      - uses: docker/build-push-action@v1
+        with:
+          registry: registry
+          repository: user/repo/image-name
+          tags: ${{ github.sha }}
+  first:
+    needs: [build]
+    runs-on: ubuntu-latest
+    container:
+      image: registry/user/repo/image-name:${{ github.sha }}
     steps:
       - uses: actions/checkout@v2
       - name: Pull/Build
@@ -13,12 +33,3 @@ jobs:
       - name: docker run
         run: |
           docker run -e TEST_SUITE_ID=1 GITHUB_SHA={{github.sha}} DATABASE_URL={{secret.MONGO_URI}}
-  second:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Pull/Build
-        run: docker pull aa
-      - name: docker run
-        run: |
-          docker run -e TEST_SUITE_ID=2 GITHUB_SHA={{github.sha}} DATABASE_URL={{secret.MONGO_URI}}
