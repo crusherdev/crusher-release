@@ -22,7 +22,7 @@ jobs:
           key: ${{ runner.os }}-multi-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-multi-buildx
-      - uses: docker/build-push-action@v1
+      - uses: docker/build-push-action@v2
         with:
           registry: registry
           repository: user/repo/image-name
