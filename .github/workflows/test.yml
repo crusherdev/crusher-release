@@ -1,6 +1,6 @@
 name: CI
 on:
-  push: 
+  push:
     branches: master
   workflow_dispatch:
     inputs:
@@ -13,51 +13,50 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-#       - name: Cache Docker layers
-#         uses: actions/cache@v2
-#         with:
-#           path: /tmp/.buildx-cache
-#           # Key is named differently to avoid collision
-#           key: ${{ runner.os }}-multi-buildx-${{ github.sha }}
-#           restore-keys: |
-#             ${{ runner.os }}-multi-buildx
-      - uses: docker/build-push-action@v1
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cache Docker layers
+        uses: actions/cache@v2
         with:
-          registry: registry
-          repository: user/repo/image-name
-          tags: ${{ github.sha }}
-#       - uses: docker/build-push-action@v2
-#         with:
-#           registry: registry
-#           repository: user/repo/image-name
-#           tags: ${{ github.sha }}
-#           cache-from: type=local,src=/tmp/.buildx-cache
-#           # Note the mode=max here
-#           # More: https://github.com/moby/buildkit#--export-cache-options
-#           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
-#           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
-#       - name: Move cache
-#         run: |
-#           rm -rf /tmp/.buildx-cache
-#           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          path: /tmp/.buildx-cache
+          # Key is named differently to avoid collision
+          key: ${{ runner.os }}-multi-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-multi-buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build and export
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          tags: myimage:latest
+          outputs: type=docker,dest=/tmp/myimage.tar
+          cache-from: type=local,src=/tmp/.buildx-cache
+          # Note the mode=max here
+          # More: https://github.com/moby/buildkit#--export-cache-options
+          # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
+          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: myimage
+          path: /tmp/myimage.tar
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
   first:
     needs: [build]
     runs-on: ubuntu-latest
-    container:
-      image: registry/user/repo/image-name:${{ github.sha }}
-      env:
-        GITHUB_SHA: ${{github.sha}}
-        TEST_NUMBER: 1
     steps:
-      - run: npm start
-  second:
-    needs: [build]
-    runs-on: ubuntu-latest
-    container:
-      image: registry/user/repo/image-name:${{ github.sha }}
-      env:
-        GITHUB_SHA: ${{github.sha}}
-        TEST_NUMBER: 2
-    steps:
-      - run: npm start
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: myimage
+          path: /tmp
+      - name: Load image
+        run: |
+          docker load --input /tmp/myimage.tar
+          docker image ls -a -e  GITHUB_SHA=${{github.sha}} TEST_NUMBER=1
