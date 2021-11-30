@@ -1,8 +1,9 @@
 name: CI
 on:
-  workflow_dispatch: 
+  push: master
+  workflow_dispatch:
     inputs:
-       releasename:
+      releasename:
         description: Name of release
         type: text
         default: latest

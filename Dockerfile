@@ -7,7 +7,8 @@ RUN wget https://github.com/crusherdev/crusher-downloads/releases/download/v0.2/
     dpkg -i crusher-recorder.deb || true && \
     apt-get -yq -f install && \
     dpkg -i crusher-recorder.deb && \
-    rm crusher-recorder.deb && \
+    rm crusher-recorder.deb 
+    
 COPY . .
 
 RUN node -v
