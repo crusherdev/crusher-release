@@ -15,4 +15,5 @@ RUN npm install npm@latest -g && \
     npm install n -g && \
     n 14 && PATH="$PATH"
 RUN npm install
-CMD ["npx","ts-node","index.ts"]
+
+CMD ['& npx ts-node index.ts']
