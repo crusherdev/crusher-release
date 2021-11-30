@@ -14,11 +14,12 @@ enum Status {
 }
 
 model RunResult {
-  id          String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  id          String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
   sha         String
   releaseName String
   testURL     String
   testName    String
   status      Status
   logs        String
+  startTime   DateTime
 }

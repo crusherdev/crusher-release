@@ -60,4 +60,7 @@ jobs:
       - name: Load image
         run: |
           docker load --input /tmp/myimage.tar
-          docker run -p 6080:80 -e RESOLUTION=1366x768 -e GITHUB_SHA=${{github.sha}} -e TEST_NUMBER=1 myimage
+          docker run -p 6080:80 -e RESOLUTION=1366x768 -e GITHUB_SHA=${{github.sha}} -e TEST_NUMBER=1 -d  --name crusher myimage
+          docker exec crusher npx ts-node index.ts
+          chmod +x stopScript.sh
+          stopScript.sh

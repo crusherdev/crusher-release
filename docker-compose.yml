@@ -2,6 +2,8 @@ version: "3"
 services:
   crusher:
     build: .
+    devices:
+      - "/dev/snd:/dev/snd"
     ports:
       - "6080:80"
     volumes:

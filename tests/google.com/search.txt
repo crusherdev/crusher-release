@@ -1,0 +1,161 @@
+Delay 2
+KeyStrPress g
+KeyStrRelease g
+KeyStrPress o
+KeyStrRelease o
+KeyStrPress o
+KeyStrRelease o
+KeyStrPress g
+KeyStrRelease g
+KeyStrPress l
+KeyStrRelease l
+KeyStrPress e
+KeyStrRelease e
+KeyStrPress period
+KeyStrRelease period
+KeyStrPress c
+KeyStrPress o
+KeyStrRelease c
+KeyStrPress m
+KeyStrRelease o
+KeyStrRelease m
+KeyStrPress Return
+KeyStrRelease Return
+Delay 2
+MotionNotify 1178 375
+ButtonPress 1
+ButtonRelease 1
+MotionNotify 1182 310
+ButtonPress 1
+ButtonRelease 1
+Delay 2
+MotionNotify 416 515
+ButtonPress 1
+ButtonRelease 1
+MotionNotify 417 516
+KeyStrPress a
+KeyStrRelease a
+KeyStrPress m
+KeyStrRelease m
+KeyStrPress a
+KeyStrRelease a
+KeyStrPress z
+KeyStrRelease z
+KeyStrPress o
+KeyStrPress n
+KeyStrRelease o
+KeyStrRelease n
+KeyStrPress Return
+KeyStrRelease Return
+MotionNotify 1195 302
+ButtonPress 1
+ButtonRelease 1
+MotionNotify 927 222
+ButtonPress 5
+ButtonRelease 5
+MotionNotify 923 231
+ButtonPress 5
+ButtonRelease 5
+MotionNotify 914 249
+ButtonPress 5
+ButtonRelease 5
+MotionNotify 896 280
+ButtonPress 5
+ButtonRelease 5
+MotionNotify 843 506
+ButtonPress 5
+ButtonRelease 5
+MotionNotify 843 509
+ButtonPress 5
+ButtonRelease 5
+MotionNotify 842 510
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+MotionNotify 274 513
+ButtonPress 1
+ButtonRelease 1
+MotionNotify 456 274
+ButtonPress 1
+ButtonRelease 1
+MotionNotify 477 333
+ButtonPress 1
+ButtonRelease 1
+MotionNotify 1046 108
+ButtonPress 1
+ButtonRelease 1

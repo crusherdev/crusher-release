@@ -18,3 +18,4 @@ COPY . .
 RUN npm i
 
 ENV OPENBOX_ARGS "--startup 'npx ts-node /root/index.ts'"
+ENV DISPLAY ":1"
