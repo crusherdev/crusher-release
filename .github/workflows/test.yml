@@ -14,37 +14,50 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          # Key is named differently to avoid collision
-          key: ${{ runner.os }}-multi-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-multi-buildx
-      - uses: docker/build-push-action@v2
+#       - name: Cache Docker layers
+#         uses: actions/cache@v2
+#         with:
+#           path: /tmp/.buildx-cache
+#           # Key is named differently to avoid collision
+#           key: ${{ runner.os }}-multi-buildx-${{ github.sha }}
+#           restore-keys: |
+#             ${{ runner.os }}-multi-buildx
+      - uses: docker/build-push-action@v1
         with:
           registry: registry
           repository: user/repo/image-name
           tags: ${{ github.sha }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          # Note the mode=max here
-          # More: https://github.com/moby/buildkit#--export-cache-options
-          # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
-          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+#       - uses: docker/build-push-action@v2
+#         with:
+#           registry: registry
+#           repository: user/repo/image-name
+#           tags: ${{ github.sha }}
+#           cache-from: type=local,src=/tmp/.buildx-cache
+#           # Note the mode=max here
+#           # More: https://github.com/moby/buildkit#--export-cache-options
+#           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
+#           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+#       - name: Move cache
+#         run: |
+#           rm -rf /tmp/.buildx-cache
+#           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
   first:
     needs: [build]
     runs-on: ubuntu-latest
     container:
       image: registry/user/repo/image-name:${{ github.sha }}
+      env:
+        GITHUB_SHA: ${{github.sha}}
+        TEST_NUMBER: 1
     steps:
-      - uses: actions/checkout@v2
-      - name: Pull/Build
-        run: docker pull aa
-      - name: docker run
-        run: |
-          docker run -e TEST_SUITE_ID=1 GITHUB_SHA={{github.sha}} DATABASE_URL={{secret.MONGO_URI}}
+      - run: npm start
+  second:
+    needs: [build]
+    runs-on: ubuntu-latest
+    container:
+      image: registry/user/repo/image-name:${{ github.sha }}
+      env:
+        GITHUB_SHA: ${{github.sha}}
+        TEST_NUMBER: 2
+    steps:
+      - run: npm start
