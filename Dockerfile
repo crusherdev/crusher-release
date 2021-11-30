@@ -1,6 +1,6 @@
 FROM dorowu/ubuntu-desktop-lxde-vnc
 
-RUN apt-get update && apt-get upgrade -y && \
+RUN apt-get update && \
     apt-get install -y xmacro wget nodejs \
     npm                     
 RUN wget https://github.com/crusherdev/crusher-downloads/releases/download/v0.2/crusher-recorder.deb && \
@@ -11,12 +11,8 @@ RUN wget https://github.com/crusherdev/crusher-downloads/releases/download/v0.2/
     
 COPY . .
 
-RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash && \
-    export NVM_DIR="$HOME/.nvm" && \ 
-    . "$NVM_DIR/nvm.sh" && \
-    nvm install 14 && \
-    nvm use 14 && \
-    nvm alias default 14 && \
-    npm install
+RUN npm install npm@latest -g && \
+    npm install n -g && \
+    n 14 && PATH="$PATH"
     
 CMD ["npx","ts-node","index.ts"]
