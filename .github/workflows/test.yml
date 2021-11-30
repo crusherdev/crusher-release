@@ -1,6 +1,7 @@
 name: CI
 on:
-  push: master
+  push: 
+    branches: master
   workflow_dispatch:
     inputs:
       releasename:
