@@ -11,11 +11,12 @@ RUN wget https://github.com/crusherdev/crusher-downloads/releases/download/v0.2/
     
 COPY . .
 
-RUN node -v && \
 RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash && \
-    source ~/.bashrc && \
+    export NVM_DIR="$HOME/.nvm" && \ 
+    . "$NVM_DIR/nvm.sh" && \
+    nvm install 14 && \
     nvm use 14 && \
-    node -v
-RUN npm install
-
+    nvm alias default 14 && \
+    npm install
+    
 CMD ["npx","ts-node","index.ts"]
