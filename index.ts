@@ -49,28 +49,26 @@ async function main(er: Error | null, files: string[]) {
 
     const status = "PASS";
     result.push({ file, status });
-    await prisma.runResult.create({
-      data: {
-        testName,
-        testURL,
-        status,
-        sha: GITHUB_SHA,
-        releaseName: "",
-        logs: "",
-      },
-    });
+    await prisma.runResult
+      .create({
+        data: {
+          testName,
+          testURL,
+          status,
+          sha: GITHUB_SHA,
+          releaseName: "",
+          logs: "",
+        },
+      })
+      .catch(console.log);
     crusherRecorder.kill("SIGHUP");
     await wait();
   }
-
-  fs.writeFileSync("./output.txt", result.join("\n"), {
-    encoding: "utf-8",
-    flag: "w",
-  });
+  console.log(result);
 }
 
 (async () => {
-  await prisma.$connect();
+  await prisma.$connect().catch(console.log);
   const files = await getFiles();
 
   await main(null, files as any);
