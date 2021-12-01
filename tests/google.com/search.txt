@@ -159,3 +159,4 @@ ButtonRelease 1
 MotionNotify 1046 108
 ButtonPress 1
 ButtonRelease 1
+Delay 10
