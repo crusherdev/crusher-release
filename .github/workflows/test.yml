@@ -59,9 +59,7 @@ jobs:
           name: myimage
           path: /tmp
       - name: Load image
-        env:
-          DATABASE_URL: ${{secrets.DATABASE_URL}}
         run: |
           docker load --input /tmp/myimage.tar
-          docker run -p 6080:80 -e  -e RESOLUTION=1366x768 -e GITHUB_SHA=${{github.sha}} -e TEST_NUMBER=1 -d  --name crusher myimage
+          docker run -p 6080:80 -e DATABASE_URL=${{secrets.DATABASE_URL}} -e RESOLUTION=1366x768 -e GITHUB_SHA=${{github.sha}} -e TEST_NUMBER=1 -d  --name crusher myimage
           docker exec crusher npx ts-node index.ts
