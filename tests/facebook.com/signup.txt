@@ -1,0 +1,82 @@
+Delay 4
+KeyStrPress f
+KeyStrPress a
+KeyStrRelease f
+KeyStrRelease a
+KeyStrPress c
+KeyStrRelease c
+KeyStrPress e
+KeyStrRelease e
+KeyStrPress b
+KeyStrRelease b
+KeyStrPress o
+KeyStrRelease o
+KeyStrPress o
+KeyStrPress k
+KeyStrRelease o
+KeyStrRelease k
+KeyStrPress period
+KeyStrRelease period
+KeyStrPress c
+KeyStrPress o
+KeyStrRelease c
+KeyStrPress m
+KeyStrRelease o
+KeyStrRelease m
+KeyStrPress Return
+KeyStrRelease Return
+Delay 8
+MotionNotify 701 351
+ButtonPress 1
+ButtonRelease 1
+MotionNotify 1210 353
+ButtonPress 1
+ButtonRelease 1
+MotionNotify 1183 293
+ButtonPress 1
+ButtonRelease 1
+MotionNotify 763 603
+ButtonPress 1
+ButtonRelease 1
+MotionNotify 472 483
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+ButtonPress 5
+ButtonRelease 5
+MotionNotify 408 386
+ButtonPress 1
+ButtonRelease 1
+MotionNotify 410 411
+ButtonPress 1
+MotionNotify 411 413
+ButtonRelease 1
+KeyStrPress Shift_L
+KeyStrPress d
+KeyStrRelease Shift_L
+KeyStrRelease d
+KeyStrPress e
+KeyStrRelease e
+KeyStrPress m
+KeyStrPress o
+KeyStrRelease m
+KeyStrRelease o
+KeyStrPress Tab
+KeyStrRelease Tab
+KeyStrPress Shift_L
+KeyStrPress a
+KeyStrRelease Shift_L
+KeyStrRelease a
+KeyStrPress c
+KeyStrRelease c
+KeyStrPress c
+KeyStrRelease c
+KeyStrPress o
+KeyStrRelease o
+KeyStrPress u
+KeyStrRelease u
+KeyStrPress n
+KeyStrPress t
+KeyStrRelease n
+KeyStrRelease t

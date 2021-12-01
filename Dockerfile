@@ -13,9 +13,11 @@ RUN npm install npm@latest -g && \
     npm install n -g && \
     n 14 && PATH="$PATH"
 
+
 COPY . .
 
 RUN npm i
+RUN npx prisma generate
 
 ENV OPENBOX_ARGS "--startup 'npx ts-node /root/index.ts'"
 ENV DISPLAY ":1"

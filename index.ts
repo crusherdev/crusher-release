@@ -58,6 +58,7 @@ async function main(er: Error | null, files: string[]) {
           sha: GITHUB_SHA,
           releaseName: "",
           logs: "",
+          startTime: new Date(),
         },
       })
       .catch(console.log);
