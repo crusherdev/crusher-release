@@ -78,7 +78,7 @@ jobs:
           script: |
             const fs= require('fs')
             const result = fs.readFileSync("results.md", "utf8");
-            github.repos.createCommitComment({
+            github.rest.repos.createCommitComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               commit_sha:process.env.SHA,
