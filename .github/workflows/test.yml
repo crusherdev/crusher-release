@@ -50,6 +50,7 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Download artifact
@@ -66,16 +67,20 @@ jobs:
       - name: Excecute Tests
         run: |
           docker exec crusher npx ts-node index.ts
+      - name: Get test results
+        run: docker exec crusher cat results.md > results.md
       - name: Comment Test Results
         uses: actions/github-script@v5
+        env:
+          SHA: ${{github.sha}}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs= require('fs')
             const result = fs.readFileSync("results.md", "utf8");
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
+            github.repos.createCommitComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
+              commit_sha:process.env.SHA,
               body: String(result)
-            })
+            });
