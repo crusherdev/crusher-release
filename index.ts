@@ -36,19 +36,30 @@ async function main(er: Error | null, files: string[]) {
   // @Note: Some issue with this. Array is empty sometimes
   // files = files.slice(TEST_NUMBER * (LIMIT - 1), TEST_NUMBER * LIMIT);
   console.log(files);
-  const result = [];
+  const results = [
+    `| Test Name | Test URL | Status |`,
+    `| --------- | -------- | ------ |`,
+  ];
 
   for (const file of files) {
     const [_, testURL, testName] = file.match(/tests\/(.*)\/(.*).txt/) || [];
 
-    const crusherRecorder = spawn("crusher-electron-app", ["--no-sandbox"]);
+    const crusherRecorder = spawn("crusher-electron-app", [
+      "--no-sandbox",
+      `--log-file=./${testName}_${testURL}.json`,
+    ]);
     console.log(testName, testURL);
     await wait(2);
 
     await execPromise(`xmacroplay -d 50 "$DISPLAY" < ${file}`);
 
-    const status = "PASS";
-    result.push({ file, status });
+    let status: "FAIL" | "PASS" = "FAIL";
+    if (fs.existsSync(`${testName}_${testURL}.json`)) {
+      const logs = require(`./${testName}_${testURL}.json`);
+      status = logs.hasPassed ? "PASS" : "FAIL";
+    }
+
+    results.push(`|${testName}|${testURL}|${status}|`);
     await prisma.runResult
       .create({
         data: {
@@ -62,10 +73,11 @@ async function main(er: Error | null, files: string[]) {
         },
       })
       .catch(console.log);
+    await wait(2);
     crusherRecorder.kill("SIGHUP");
     await wait();
   }
-  console.log(result);
+  fs.writeFileSync("./results.md", results.join("\n"), "utf8");
 }
 
 (async () => {

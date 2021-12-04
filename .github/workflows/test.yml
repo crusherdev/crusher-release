@@ -29,8 +29,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          tags: myimage:latest
-          outputs: type=docker,dest=/tmp/myimage.tar
+          tags: crusherimage:latest
+          outputs: type=docker,dest=/tmp/crusherimage.tar
           cache-from: type=local,src=/tmp/.buildx-cache
           # Note the mode=max here
           # More: https://github.com/moby/buildkit#--export-cache-options
@@ -39,8 +39,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: myimage
-          path: /tmp/myimage.tar
+          name: crusherimage
+          path: /tmp/crusherimage.tar
           retention-days: 1
       - name: Move cache
         run: |
@@ -55,14 +55,27 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: myimage
+          name: crusherimage
           path: /tmp
       - name: Load image
         run: |
-          docker load --input /tmp/myimage.tar
+          docker load --input /tmp/crusherimage.tar
       - name: Run image
         run: |
-          docker run -p 6080:80 -e DATABASE_URL=${{secrets.DATABASE_URL}} -e RESOLUTION=1366x768 -e GITHUB_SHA=${{github.sha}} -e TEST_NUMBER=1 -d  --name crusher myimage
+          docker run -p 6080:80 -e DATABASE_URL=${{secrets.DATABASE_URL}} -e RESOLUTION=1366x768 -e GITHUB_SHA=${{github.sha}} -e TEST_NUMBER=1 -d  --name crusher crusherimage
       - name: Excecute Tests
         run: |
           docker exec crusher npx ts-node index.ts
+      - name: Comment Test Results
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs= require('fs')
+            const result = fs.readFileSync("results.md", "utf8");
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: String(result)
+            })
