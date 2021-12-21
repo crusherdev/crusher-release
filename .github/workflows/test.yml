@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: master
+    branches: *
   workflow_dispatch:
     inputs:
       releasename:
@@ -63,7 +63,7 @@ jobs:
           docker load --input /tmp/crusherimage.tar
       - name: Run image
         run: |
-          docker run -p 6080:80 -e DATABASE_URL=${{secrets.DATABASE_URL}} -e RESOLUTION=1366x768 -e GITHUB_SHA=${{github.sha}} -e TEST_NUMBER=1 -d  --name crusher crusherimage
+          docker run -p 6080:80 -e DATABASE_URL=${{secrets.DATABASE_URL}} -e RESOLUTION=1920x1080 -e GITHUB_SHA=${{github.sha}} -e TEST_NUMBER=1 -d  --name crusher crusherimage
       - name: Excecute Tests
         run: |
           docker exec crusher npx ts-node index.ts

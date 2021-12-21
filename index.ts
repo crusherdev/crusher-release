@@ -5,7 +5,7 @@ import glob from "glob";
 import fs from "fs";
 
 function getFiles() {
-  return new Promise((resolve, reject) => {
+  return new Promise<String[]>((resolve, reject) => {
     glob("tests/**/*.txt", (err: any, files: any) => {
       if (err) {
         reject(err);
@@ -32,7 +32,7 @@ const LIMIT = 5;
 const GITHUB_SHA = process.env.GITHUB_SHA || "";
 const TEST_NUMBER = Number(process.env.TEST_NUMBER) || 1;
 
-async function main(er: Error | null, files: string[]) {
+async function main(files: string[]) {
   // @Note: Some issue with this. Array is empty sometimes
   // files = files.slice(TEST_NUMBER * (LIMIT - 1), TEST_NUMBER * LIMIT);
   console.log(files);
@@ -73,7 +73,7 @@ async function main(er: Error | null, files: string[]) {
         },
       })
       .catch(console.log);
-    await wait(2);
+    await wait(20);
     crusherRecorder.kill("SIGHUP");
     await wait();
   }
@@ -84,5 +84,5 @@ async function main(er: Error | null, files: string[]) {
   await prisma.$connect().catch(console.log);
   const files = await getFiles();
 
-  await main(null, files as any);
+  await main(files);
 })();

@@ -3,7 +3,7 @@ FROM dorowu/ubuntu-desktop-lxde-vnc
 RUN apt-get update && \
     apt-get install -y xmacro wget nodejs \
     npm
-RUN wget https://github.com/crusherdev/crusher-downloads/releases/download/v1.0.8/crusher-recorder.deb && \
+RUN wget https://github.com/crusherdev/crusher-release/releases/download/v1.0.9.beta-0/crusher-electron-app_1.0.9_amd64.deb > crusher-recorder.deb && \
     dpkg -i crusher-recorder.deb || true && \
     apt-get -yq -f install && \
     dpkg -i crusher-recorder.deb && \
