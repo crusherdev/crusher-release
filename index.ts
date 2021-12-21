@@ -5,7 +5,7 @@ import glob from "glob";
 import fs from "fs";
 
 function getFiles() {
-  return new Promise<String[]>((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     glob("tests/**/*.txt", (err: any, files: any) => {
       if (err) {
         reject(err);
@@ -84,5 +84,5 @@ async function main(files: string[]) {
   await prisma.$connect().catch(console.log);
   const files = await getFiles();
 
-  await main(files);
+  await main(files as any);
 })();
