@@ -68,9 +68,12 @@ jobs:
         run: docker exec -d crusher recordmydesktop --on-the-fly-encoding --no-sound
       - name: Execute Tests
         run: |
-          docker exec crusher npx ts-node index.ts
+          docker exec crusher npm start
+          docker exec crusher ls
       - name: Get test results
         run: docker exec crusher cat results.md > results.md
+      - name: Download Screen recording
+        run: docker exec crusher cat out.ogv > out.ogv
       - name: Upload ScreenRecording
         uses: actions/upload-artifact@v2
         with:
