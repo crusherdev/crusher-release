@@ -74,8 +74,8 @@ jobs:
       - name: Upload ScreenRecording
         uses: actions/upload-artifact@v2
         with:
-          name: testSuite1
-          path: ./out.ogv
+          name: testSuite1-${{github.sha}}
+          path: ${{ github.workspace }}/out.ogv
           retention-days: 2
       - name: Comment Test Results
         uses: actions/github-script@v5

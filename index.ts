@@ -62,6 +62,7 @@ async function main(files: string[]) {
     }
 
     if (!fs.existsSync(logFile) && retry > 5) {
+      results.push(`|${testName}|${testURL}|Logs not generated|`);
       console.error(`File ${logFile} not found`);
       continue;
     }
@@ -69,7 +70,7 @@ async function main(files: string[]) {
     try {
       const recordedSteps =
         require(`./tests/${testURL}/${testName}.json`)?.steps || [];
-      const generatedLogs = require(`./${logFile}`)?.steps || [];
+      const generatedLogs = require(`./${logFile}`);
 
       const stepsMatched =
         generatedLogs.hasPassed &&
