@@ -32,7 +32,7 @@ const LIMIT = 5;
 const GITHUB_SHA = process.env.GITHUB_SHA || "";
 const TEST_NUMBER = Number(process.env.TEST_NUMBER) || 1;
 
-async function main(er: Error | null, files: string[]) {
+async function main(files: string[]) {
   // @Note: Some issue with this. Array is empty sometimes
   // files = files.slice(TEST_NUMBER * (LIMIT - 1), TEST_NUMBER * LIMIT);
   console.log(files);
@@ -43,36 +43,61 @@ async function main(er: Error | null, files: string[]) {
 
   for (const file of files) {
     const [_, testURL, testName] = file.match(/tests\/(.*)\/(.*).txt/) || [];
+    const logFile = `${testName}_${testURL}.json`;
 
     const crusherRecorder = spawn("crusher-electron-app", [
       "--no-sandbox",
-      `--log-file=./${testName}_${testURL}.json`,
+      `--log-file=./${logFile}`,
     ]);
     console.log(testName, testURL);
     await wait(2);
 
     await execPromise(`xmacroplay -d 50 "$DISPLAY" < ${file}`);
 
-    let status: "FAIL" | "PASS" = "FAIL";
-    if (fs.existsSync(`${testName}_${testURL}.json`)) {
-      const logs = require(`./${testName}_${testURL}.json`);
-      status = logs.hasPassed ? "PASS" : "FAIL";
+    let retry = 0;
+
+    while (!fs.existsSync(logFile) && retry < 5) {
+      await wait(10);
+      retry++;
     }
 
-    results.push(`|${testName}|${testURL}|${status}|`);
-    await prisma.runResult
-      .create({
-        data: {
-          testName,
-          testURL,
-          status,
-          sha: GITHUB_SHA,
-          releaseName: "",
-          logs: "",
-          startTime: new Date(),
-        },
-      })
-      .catch(console.log);
+    if (!fs.existsSync(logFile) && retry > 5) {
+      results.push(`|${testName}|${testURL}|Logs not generated|`);
+      console.error(`File ${logFile} not found`);
+      continue;
+    }
+
+    try {
+      const recordedSteps =
+        require(`./tests/${testURL}/${testName}.json`)?.steps || [];
+      const generatedLogs = require(`./${logFile}`);
+
+      const stepsMatched =
+        generatedLogs.hasPassed &&
+        recordedSteps.every((step: any, index: number) => {
+          return step.type === generatedLogs.steps[index].type;
+        });
+
+      const status = stepsMatched ? "PASS" : "FAIL";
+
+      results.push(`|${testName}|${testURL}|${status}|`);
+      await prisma.runResult
+        .create({
+          data: {
+            testName,
+            testURL,
+            status,
+            sha: GITHUB_SHA,
+            releaseName: "",
+            logs: "",
+            startTime: new Date(),
+          },
+        })
+        .catch(console.log);
+    } catch (error) {
+      console.error("failed");
+    }
+
     await wait(2);
     crusherRecorder.kill("SIGHUP");
     await wait();
@@ -84,5 +109,5 @@ async function main(er: Error | null, files: string[]) {
   await prisma.$connect().catch(console.log);
   const files = await getFiles();
 
-  await main(null, files as any);
+  await main(files as any);
 })();

@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: master
+    branches: "*"
   workflow_dispatch:
     inputs:
       releasename:
@@ -63,12 +63,23 @@ jobs:
           docker load --input /tmp/crusherimage.tar
       - name: Run image
         run: |
-          docker run -p 6080:80 -e DATABASE_URL=${{secrets.DATABASE_URL}} -e RESOLUTION=1366x768 -e GITHUB_SHA=${{github.sha}} -e TEST_NUMBER=1 -d  --name crusher crusherimage
-      - name: Excecute Tests
+          docker run -p 6080:80 -e DATABASE_URL=${{secrets.DATABASE_URL}} -e RESOLUTION=1920x1080 -e GITHUB_SHA=${{github.sha}} -e TEST_NUMBER=1 -d  --name crusher crusherimage
+      - name: Start Screen recording
+        run: docker exec -d crusher recordmydesktop --on-the-fly-encoding --no-sound
+      - name: Execute Tests
         run: |
-          docker exec crusher npx ts-node index.ts
+          docker exec crusher npm start
+          docker exec crusher ls
       - name: Get test results
         run: docker exec crusher cat results.md > results.md
+      - name: Download Screen recording
+        run: docker exec crusher cat out.ogv > out.ogv
+      - name: Upload ScreenRecording
+        uses: actions/upload-artifact@v2
+        with:
+          name: testSuite1-${{github.sha}}
+          path: ${{ github.workspace }}/out.ogv
+          retention-days: 2
       - name: Comment Test Results
         uses: actions/github-script@v5
         env:
@@ -84,3 +95,7 @@ jobs:
               commit_sha:process.env.SHA,
               body: String(result)
             });
+      - name: Stopping Container
+        run: |
+          docker stop crusher
+          docker rm crusher
