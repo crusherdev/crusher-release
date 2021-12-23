@@ -61,37 +61,41 @@ async function main(files: string[]) {
       retry++;
     }
 
-    if (retry > 5) {
+    if (!fs.existsSync(logFile) && retry > 5) {
       console.error(`File ${logFile} not found`);
       continue;
     }
 
-    const recordedSteps =
-      require(`./tests/${testURL}/${testName}.json`)?.steps || [];
-    const generatedLogs = require(`./${logFile}`)?.steps || [];
+    try {
+      const recordedSteps =
+        require(`./tests/${testURL}/${testName}.json`)?.steps || [];
+      const generatedLogs = require(`./${logFile}`)?.steps || [];
 
-    const stepsMatched =
-      generatedLogs.hasPassed &&
-      recordedSteps.every((step: any, index: number) => {
-        return step.type === generatedLogs.steps[index].type;
-      });
+      const stepsMatched =
+        generatedLogs.hasPassed &&
+        recordedSteps.every((step: any, index: number) => {
+          return step.type === generatedLogs.steps[index].type;
+        });
 
-    const status = stepsMatched ? "PASS" : "FAIL";
+      const status = stepsMatched ? "PASS" : "FAIL";
 
-    results.push(`|${testName}|${testURL}|${status}|`);
-    await prisma.runResult
-      .create({
-        data: {
-          testName,
-          testURL,
-          status,
-          sha: GITHUB_SHA,
-          releaseName: "",
-          logs: "",
-          startTime: new Date(),
-        },
-      })
-      .catch(console.log);
+      results.push(`|${testName}|${testURL}|${status}|`);
+      await prisma.runResult
+        .create({
+          data: {
+            testName,
+            testURL,
+            status,
+            sha: GITHUB_SHA,
+            releaseName: "",
+            logs: "",
+            startTime: new Date(),
+          },
+        })
+        .catch(console.log);
+    } catch (error) {
+      console.error("failed");
+    }
 
     await wait(2);
     crusherRecorder.kill("SIGHUP");
