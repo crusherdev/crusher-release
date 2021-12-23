@@ -1,7 +1,7 @@
 FROM dorowu/ubuntu-desktop-lxde-vnc
 
 RUN apt-get update && \
-    apt-get install -y xmacro wget nodejs \
+    apt-get install -y xmacro recordmydesktop wget nodejs \
     npm
 RUN wget https://github.com/crusherdev/crusher-release/releases/download/v1.0.9.beta-0/crusher-electron-app_1.0.9_amd64.deb && \
     dpkg -i crusher-electron-app_1.0.9_amd64.deb || true && \
