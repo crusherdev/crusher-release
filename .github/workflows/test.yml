@@ -64,11 +64,14 @@ jobs:
       - name: Run image
         run: |
           docker run -p 6080:80 -e DATABASE_URL=${{secrets.DATABASE_URL}} -e RESOLUTION=1920x1080 -e GITHUB_SHA=${{github.sha}} -e TEST_NUMBER=1 -d  --name crusher crusherimage
-      - name: Start Screen recording
+      - name: Sleeping 5 sec
+        run: sleep 5
+        - name: Start Screen recording
         run: docker exec -d crusher recordmydesktop --on-the-fly-encoding --no-sound
       - name: Execute Tests
         run: |
-          docker exec crusher npm start
+          docker exec crusher npm run test
+          docker exec crusher cat results.md
           docker exec crusher ls
       - name: Get test results
         run: docker exec crusher cat results.md > results.md
